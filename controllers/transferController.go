@@ -41,17 +41,22 @@ var TransferCertificate = func(w http.ResponseWriter, r *http.Request) {
 //AcceptTransferCertificate This endpoint is used to complete a transfer for an object specified by Id by the authentication code.
 var AcceptTransferCertificate = func(w http.ResponseWriter, r *http.Request) {
 
+	user := r.Context().Value("user").(string)
 	params := mux.Vars(r)
 	id := params["Id"]
 	code := params["Code"]
 
-	certificate := models.GetCertificate(code)
+	certificate := models.GetCertificate(id)
 	if certificate == nil {
 		u.Respond(w, u.Message(false, "We couldn't find any transfer invitation"))
 		return
 	}
-	if id != certificate.ID {
+	if certificate.Transfer == nil || code != certificate.Transfer.Code {
 		u.Respond(w, u.Message(false, "Invalid code"))
+		return
+	}
+	if user != models.GetAccount(certificate.Transfer.To).ID {
+		u.Respond(w, u.Message(false, "Invalid User"))
 		return
 	}
 

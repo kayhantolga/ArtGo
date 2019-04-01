@@ -24,10 +24,6 @@ var certificates []Certificate
 //returns message and true if the requirement is met
 func (certificate *Certificate) Validate() (map[string]interface{}, bool) {
 
-	if certificate.ID == "" {
-		return u.Message(false, "Certificate name should be on the payload"), false
-	}
-
 	if certificate.Title == "" {
 		return u.Message(false, "Phone number should be on the payload"), false
 	}
@@ -112,7 +108,7 @@ func (certificate *Certificate) TransferTo(userEmail string) map[string]interfac
 	user := GetAccount(certificate.Transfer.To)
 	certificates[oldcertIndex] = *certificate
 	//TODO get url from env
-	u.SendTransformInvitation(user.Name, "localhost:8000/certificates/"+certificate.ID+"/transfers/"+certificate.Transfer.Code, certificate.Transfer.To)
+	u.SendTransformInvitation(user.Name, "http://localhost:8000/certificates/"+certificate.ID+"/transfers/"+certificate.Transfer.Code, certificate.Transfer.To)
 	resp := u.Message(true, "success")
 	resp["certificate"] = certificate
 	return resp

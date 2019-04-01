@@ -1,8 +1,8 @@
 package main
 
 import (
-	"Go-Backend/app"
 	"Go-Backend/controllers"
+	"go-backend/models"
 	"log"
 	"net/http"
 
@@ -14,15 +14,15 @@ import (
 func main() {
 	router := mux.NewRouter()
 
-	router.Use(app.JwtAuthentication) //attach JWT auth middleware
+	router.Use(models.JwtAuthentication) //attach JWT auth middleware
 
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
-	router.HandleFunc("/certificates", controllers.CreateCertificate).Methods("POST")
-	router.HandleFunc("/certificates/{id}", controllers.UpdateCertificate).Methods("PATCH")
-	router.HandleFunc("/certificates/{id}", controllers.DeleteCertificate).Methods("DELETE")
-	router.HandleFunc("/user/{userId}/certificates", controllers.GetCertificatesFor).Methods("GET")
-	router.HandleFunc("/certificates/{Id}/transfers", controllers.TransferCertificate).Methods("POST")
-	router.HandleFunc("/certificates/{Id}/transfers/{Code}", controllers.AccpetTransferCertificate).Methods("GET")
+	router.HandleFunc("/api/certificates", controllers.CreateCertificate).Methods("POST")
+	router.HandleFunc("/api/certificates/{id}", controllers.UpdateCertificate).Methods("PATCH")
+	router.HandleFunc("/api/certificates/{id}", controllers.DeleteCertificate).Methods("DELETE")
+	router.HandleFunc("/api/user/{userId}/certificates", controllers.GetCertificatesFor).Methods("GET")
+	router.HandleFunc("/api/certificates/{Id}/transfers", controllers.TransferCertificate).Methods("POST")
+	router.HandleFunc("/api/certificates/{Id}/transfers/{Code}", controllers.AcceptTransferCertificate).Methods("PATCH")
 
 	//Cors suppport for  all urls
 	corsObj := handlers.AllowedOrigins([]string{"*"})
