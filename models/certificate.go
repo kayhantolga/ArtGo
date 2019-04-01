@@ -105,10 +105,14 @@ func (certificate *Certificate) TransferTo(userEmail string) map[string]interfac
 		Status: "pending",
 		To:     userEmail,
 	}
+	name := ""
 	user := GetAccount(certificate.Transfer.To)
+	if user != nil {
+		name = user.Name
+	}
 	certificates[oldcertIndex] = *certificate
 	//TODO get url from env
-	u.SendTransformInvitation(user.Name, "http://localhost:8000/certificates/"+certificate.ID+"/transfers/"+certificate.Transfer.Code, certificate.Transfer.To)
+	u.SendTransformInvitation(name, "http://localhost:8000/certificates/"+certificate.ID+"/transfers/"+certificate.Transfer.Code, certificate.Transfer.To)
 	resp := u.Message(true, "success")
 	resp["certificate"] = certificate
 	return resp
